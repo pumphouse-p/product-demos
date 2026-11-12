@@ -19,7 +19,7 @@
     - name: Verify all targeted KBs in one pass
       ansible.windows.win_shell: |
         $targetKBs = @({{ target_kb_ids | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join(',') }})
-        $allMissing = @({{ win_post_search.updates | map(attribute='kb') | flatten | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join(',') }})
+        $allMissing = @({{ (win_post_search.updates | default({})).values() | map(attribute='kb') | flatten | map('regex_replace', '^', "'") | map('regex_replace', '$', "'") | join(',') }})
         $hotfixes = Get-HotFix | Select-Object -ExpandProperty HotFixID
         $remaining = @()
         foreach ($kb in $targetKBs) {
